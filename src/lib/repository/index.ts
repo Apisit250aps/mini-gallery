@@ -2,8 +2,10 @@ import client from '@/lib/db/client'
 import {
   Collection,
   Filter,
+  InferIdType,
   MongoClient,
   OptionalUnlessRequiredId,
+  WithId,
 } from 'mongodb'
 
 import type {
@@ -14,15 +16,14 @@ import type {
   IndexDefinition,
   UpdateInput,
 } from './types'
-import { uuid_v7 } from './uuid'
-
+import uuid from './uuid'
 export type { AnyZodObject, Entity, IndexDefinition } from './types'
 export type { CreateInput, UpdateInput, BaseRepoConfig } from './types'
 
 export default abstract class BaseRepo<TSchema extends AnyZodObject> {
+  protected readonly schema: TSchema
   protected readonly client: MongoClient
   protected readonly collectionName: string
-  protected readonly schema: TSchema
   private readonly indexes: IndexDefinition[]
   private _collection: Collection<Entity<TSchema>> | null = null
 
@@ -53,8 +54,14 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     return this._collection
   }
 
-  protected uuid(): string {
-    return uuid_v7()
+  protected generateUuid(): string {
+    return uuid()
+  }
+
+  private toPublicEntity(document: WithId<Entity<TSchema>>): Entity<TSchema> {
+    const { _id, ...rest } = document
+    void _id
+    return rest as Entity<TSchema>
   }
 
   public async validate(
@@ -62,35 +69,46 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     { partial = false }: { partial?: boolean } = {},
   ): Promise<Entity<TSchema>> {
     const result = partial
-      ? await this.schema.partial().safeParseAsync(data)
-      : await this.schema.safeParseAsync(data)
+      ? this.schema.partial().parse(data)
+      : this.schema.parse(data)
     if (!result.success) {
-      throw new Error(`Validation failed: ${result.error.message}`)
+      throw new Error(`Validation failed: ${result.message}`)
     }
-    return result.data as Entity<TSchema>
+    return result as Entity<TSchema>
   }
 
   async create(data: CreateInput<TSchema>): Promise<Entity<TSchema>> {
     const collection = await this.getCollection()
     const document = await this.validate({
       ...data,
-      id: this.uuid(),
+      id: this.generateUuid(),
       createdAt: new Date(),
       updatedAt: new Date(),
     })
 
-    await collection.insertOne(
+    const result = await collection.insertOne(
       document as OptionalUnlessRequiredId<Entity<TSchema>>,
     )
-    return document
+
+    const createdDocument = await this.findById(
+      document.id as InferIdType<Entity<TSchema>>,
+    )
+
+    if (!createdDocument) {
+      throw new Error(`Created document not found: ${result.insertedId}`)
+    }
+
+    return createdDocument
   }
 
-  async findById(id: string): Promise<Entity<TSchema> | null> {
+  async findById(
+    id: InferIdType<Entity<TSchema>>,
+  ): Promise<Entity<TSchema> | null> {
     const collection = await this.getCollection()
-    const document = await collection.findOne({ id } as unknown as Filter<
-      Entity<TSchema>
-    >)
-    return document ? (document as Entity<TSchema>) : null
+    const document = await collection.findOne({
+      id,
+    } as unknown as Filter<Entity<TSchema>>)
+    return document ? this.toPublicEntity(document) : null
   }
 
   async findOne(
@@ -98,7 +116,7 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
   ): Promise<Entity<TSchema> | null> {
     const collection = await this.getCollection()
     const document = await collection.findOne(filter)
-    return document ? (document as Entity<TSchema>) : null
+    return document ? this.toPublicEntity(document) : null
   }
 
   async findMany(
@@ -106,11 +124,11 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
   ): Promise<Entity<TSchema>[]> {
     const collection = await this.getCollection()
     const documents = await collection.find(filter).toArray()
-    return documents as Entity<TSchema>[]
+    return documents.map((document) => this.toPublicEntity(document))
   }
 
   async update(
-    id: string,
+    id: InferIdType<Entity<TSchema>>,
     data: UpdateInput<TSchema>,
   ): Promise<Entity<TSchema> | null> {
     const current = await this.findById(id)
@@ -129,14 +147,14 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
       $set: nextDocument,
     })
 
-    return nextDocument
+    return this.findById(id)
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: InferIdType<Entity<TSchema>>): Promise<boolean> {
     const collection = await this.getCollection()
-    const result = await collection.deleteOne({ id } as unknown as Filter<
-      Entity<TSchema>
-    >)
+    const result = await collection.deleteOne({
+      id,
+    } as unknown as Filter<Entity<TSchema>>)
     return result.deletedCount > 0
   }
 
