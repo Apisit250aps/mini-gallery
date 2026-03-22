@@ -1,6 +1,6 @@
 import { Context } from 'hono'
-import type { Category } from '../repositories/category.repo'
-import { categoryRepository } from '../repositories'
+import type { Category } from '../../../core/repositories/category.repo'
+import { categoryRepository } from '../../../core/repositories'
 
 export async function getCategories(context: Context) {
   try {
@@ -30,7 +30,22 @@ export async function createCategory(context: Context) {
   try {
     const body = await context.req.json()
     const { name } = body
+
+    const validate = await categoryRepository.validate({ name, slug: name })
+
+    if (!validate) {
+      return context.json<ApiResponse>(
+        {
+          success: false,
+          message: 'Validation failed',
+          error: 'Invalid category data',
+        },
+        400,
+      )
+    }
+
     const category = await categoryRepository.create({ name })
+
     return context.json<ApiResponse>(
       {
         success: true,
@@ -56,6 +71,23 @@ export async function updateCategory(context: Context) {
     const { id } = context.req.param()
     const body = await context.req.json()
     const { name } = body
+
+    const validate = await categoryRepository.validate(
+      { name, slug: name },
+      { partial: true },
+    )
+
+    if (!validate) {
+      return context.json<ApiResponse>(
+        {
+          success: false,
+          message: 'Validation failed',
+          error: 'Invalid category data',
+        },
+        400,
+      )
+    }
+
     const category = await categoryRepository.update(id, { name })
     return context.json<ApiResponse>(
       {
