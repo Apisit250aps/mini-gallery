@@ -122,6 +122,12 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     return documents.map((document) => this.toPublicEntity(document))
   }
 
+  async findAll(
+    filter: Filter<Entity<TSchema>> = {},
+  ): Promise<Entity<TSchema>[]> {
+    return this.findMany(filter ?? {})
+  }
+
   async update(
     id: string,
     data: UpdateInput<TSchema>,
