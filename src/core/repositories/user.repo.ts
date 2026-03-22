@@ -29,22 +29,27 @@ class UserRepository extends BaseRepo<typeof UserEntity> {
     })
   }
 
+  async createAdmin(data: Omit<UserCreate, 'isAdmin'>) {
+    return this.create({
+      ...data,
+      isAdmin: true,
+    })
+  }
+
   public async login(credentials: { name: string; password: string }) {
     const collection = await this.getCollection()
     const user = await collection.findOne({ name: credentials.name })
-    console.log('Found user for login:', user)
     if (!user) {
       throw new Error('Invalid credentials')
     }
-    const isPasswordValid = await verify(user.password, credentials.password)
-    if (!isPasswordValid) {
+    const isValid = await verify(user.password, credentials.password)
+    if (!isValid) {
       throw new Error('Invalid credentials')
     }
-
     if (!user.isActive) {
       throw new Error('User account is inactive')
     }
-
+    await this.update(user.id, { lastLogin: new Date() })
     return user
   }
 }

@@ -2,7 +2,6 @@ import client from '@/lib/db/client'
 import {
   Collection,
   Filter,
-  InferIdType,
   MongoClient,
   OptionalUnlessRequiredId,
   WithId,
@@ -90,9 +89,7 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
       document as OptionalUnlessRequiredId<Entity<TSchema>>,
     )
 
-    const createdDocument = await this.findById(
-      document.id as InferIdType<Entity<TSchema>>,
-    )
+    const createdDocument = await this.findById(document.id as string)
 
     if (!createdDocument) {
       throw new Error(`Created document not found: ${result.insertedId}`)
@@ -101,9 +98,7 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     return createdDocument
   }
 
-  async findById(
-    id: InferIdType<Entity<TSchema>>,
-  ): Promise<Entity<TSchema> | null> {
+  async findById(id: string): Promise<Entity<TSchema> | null> {
     const collection = await this.getCollection()
     const document = await collection.findOne({
       id,
@@ -128,7 +123,7 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
   }
 
   async update(
-    id: InferIdType<Entity<TSchema>>,
+    id: string,
     data: UpdateInput<TSchema>,
   ): Promise<Entity<TSchema> | null> {
     const current = await this.findById(id)
@@ -150,7 +145,7 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     return this.findById(id)
   }
 
-  async delete(id: InferIdType<Entity<TSchema>>): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     const collection = await this.getCollection()
     const result = await collection.deleteOne({
       id,
