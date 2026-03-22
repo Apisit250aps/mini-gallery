@@ -1,0 +1,807 @@
+openapi: 3.1.0
+info:
+  title: Mini Gallery Service
+  version: 0.0.0
+tags:
+  - name: Users
+  - name: Projects
+  - name: Categories
+paths:
+  /categories:
+    get:
+      operationId: CategoriesService_getCategories
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Categories
+    post:
+      operationId: CategoriesService_createCategory
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Category'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+  /categories/{id}:
+    put:
+      operationId: CategoriesService_updateCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Category'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdateRequest'
+    delete:
+      operationId: CategoriesService_deleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/EmptyData'
+                  error:
+                    type: string
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Categories
+  /projects:
+    get:
+      operationId: ProjectsService_getProjects
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Projects
+    post:
+      operationId: ProjectsService_createProject
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Project'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreateRequest'
+  /projects/{id}:
+    put:
+      operationId: ProjectsService_updateProject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Project'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdateRequest'
+    delete:
+      operationId: ProjectsService_deleteProject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/EmptyData'
+                  error:
+                    type: string
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Projects
+  /users:
+    get:
+      operationId: UsersService_getUsers
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Users
+    post:
+      operationId: UsersService_createUser
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/User'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+  /users/{id}:
+    put:
+      operationId: UsersService_updateUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/User'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+    delete:
+      operationId: UsersService_deleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/EmptyData'
+                  error:
+                    type: string
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Users
+components:
+  schemas:
+    ApiError:
+      anyOf:
+        - $ref: '#/components/schemas/ErrorResponse400'
+        - $ref: '#/components/schemas/ErrorResponse401'
+        - $ref: '#/components/schemas/ErrorResponse404'
+        - $ref: '#/components/schemas/ErrorResponse409'
+        - $ref: '#/components/schemas/ErrorResponse500'
+    Category:
+      type: object
+      required:
+        - id
+        - name
+        - slug
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CategoryCreateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+      description: The template for picking properties.
+    CategoryUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      description: The template for adding optional properties.
+    EmptyData:
+      type: object
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+        - error
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+    ErrorResponse400:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          $ref: '#/components/schemas/ErrorResponse'
+    ErrorResponse401:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          $ref: '#/components/schemas/ErrorResponse'
+    ErrorResponse404:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          $ref: '#/components/schemas/ErrorResponse'
+    ErrorResponse409:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          $ref: '#/components/schemas/ErrorResponse'
+    ErrorResponse500:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          $ref: '#/components/schemas/ErrorResponse'
+    Project:
+      type: object
+      required:
+        - id
+        - title
+        - slug
+        - category
+        - tags
+        - galleries
+        - displayOrder
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        galleries:
+          type: array
+          items:
+            type: string
+        displayOrder:
+          type: integer
+          format: int32
+        location:
+          type: string
+        type:
+          type: string
+        program:
+          type: string
+        client:
+          type: string
+        siteArea:
+          type: string
+        builtArea:
+          type: string
+        design:
+          type: string
+        completion:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProjectCreateRequest:
+      type: object
+      required:
+        - title
+        - slug
+        - category
+        - tags
+        - galleries
+        - displayOrder
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        galleries:
+          type: array
+          items:
+            type: string
+        displayOrder:
+          type: integer
+          format: int32
+        location:
+          type: string
+        type:
+          type: string
+        program:
+          type: string
+        client:
+          type: string
+        siteArea:
+          type: string
+        builtArea:
+          type: string
+        design:
+          type: string
+        completion:
+          type: string
+        description:
+          type: string
+      description: The template for omitting properties.
+    ProjectUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        galleries:
+          type: array
+          items:
+            type: string
+        displayOrder:
+          type: integer
+          format: int32
+        location:
+          type: string
+        type:
+          type: string
+        program:
+          type: string
+        client:
+          type: string
+        siteArea:
+          type: string
+        builtArea:
+          type: string
+        design:
+          type: string
+        completion:
+          type: string
+        description:
+          type: string
+      description: The template for adding optional properties.
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - isAdmin
+        - isActive
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        isAdmin:
+          type: boolean
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        lastLogin:
+          anyOf:
+            - type: string
+              format: date-time
+            - type: 'null'
+    UserCreateRequest:
+      type: object
+      required:
+        - name
+        - isAdmin
+        - isActive
+      properties:
+        name:
+          type: string
+        isAdmin:
+          type: boolean
+        isActive:
+          type: boolean
+      description: The template for picking properties.
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        isAdmin:
+          type: boolean
+        isActive:
+          type: boolean
+      description: The template for adding optional properties.
