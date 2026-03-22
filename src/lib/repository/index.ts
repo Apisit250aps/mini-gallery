@@ -16,7 +16,7 @@ import type {
   IndexDefinition,
   UpdateInput,
 } from './types'
-import uuid from './uuid'
+import { uuid } from './libs'
 export type { AnyZodObject, Entity, IndexDefinition } from './types'
 export type { CreateInput, UpdateInput, BaseRepoConfig } from './types'
 

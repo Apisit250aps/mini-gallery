@@ -1,13 +1,10 @@
 import z from 'zod'
-import uuid from './uuid'
-import slugify from 'slugify'
+
+import { slug, uuid } from './libs'
 
 export const zodModel = <T extends z.ZodRawShape>(schema: T) => {
   return z.object({
-    id: z
-      .string()
-      .uuid()
-      .default(() => uuid()),
+    id: z.uuid().default(() => uuid()),
     ...schema,
     createdAt: zodTimeStamp,
     updatedAt: zodTimeStamp,
@@ -15,16 +12,7 @@ export const zodModel = <T extends z.ZodRawShape>(schema: T) => {
 }
 
 export const zodTimeStamp = z.date().default(() => new Date())
-export const zodSlug = z
-  .string()
-  .min(1)
-  .transform((str) =>
-    slugify(str, {
-      lower: true,
-      strict: true,
-      remove: /[*+~.()'"!:@]/g,
-    }),
-  )
+export const zodSlug = z.string().min(1).transform(slug)
 // string
 export const zodStringOrNumber = z.union([z.string(), z.number()])
 export const zodStringOrDate = z.union([z.string(), z.date()])
