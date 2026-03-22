@@ -163,4 +163,9 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     const document = await collection.findOne(filter)
     return document !== null
   }
+
+  async count(filter: Filter<Entity<TSchema>> = {}): Promise<number> {
+    const collection = await this.getCollection()
+    return collection.countDocuments(filter)
+  }
 }
