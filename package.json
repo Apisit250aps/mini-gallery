@@ -9,32 +9,33 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hey-api/openapi-ts": "^0.92.4",
+    "argon2": "^0.44.0",
     "mongodb": "^7.1.0",
     "next": "16.2.1",
+    "openapi-fetch": "^0.17.0",
+    "openapi-react-query": "^0.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "slugify": "^1.6.8",
     "uuid": "^13.0.0",
-    "zod": "^4.3.6",
-    "@hey-api/openapi-ts": "^0.92.4",
-    "openapi-fetch": "^0.17.0",
-    "openapi-react-query": "^0.5.4"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.1",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "openapi-typescript": "^7.13.0",
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
     "@typespec/openapi": "latest",
     "@typespec/openapi3": "latest",
-    "@typespec/rest": "latest"
+    "@typespec/rest": "latest",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "openapi-typescript": "^7.13.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
