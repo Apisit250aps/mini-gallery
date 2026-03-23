@@ -1,5 +1,20 @@
+import { ActionDropdown } from '@/components/share/overlay/action-dropdown'
 import { components } from '@/lib/client/api/v1'
-import { ColumnDef } from '@tanstack/react-table'
+import { Cell, ColumnDef } from '@tanstack/react-table'
+import { ProjectDeleteAction, ProjectEditAction } from './project-actions'
+
+const ProjectActionColumn = ({
+  cell,
+}: {
+  cell: Cell<components['schemas']['Project'], unknown>
+}) => {
+  return (
+    <ActionDropdown id={`PROJECT_ACTION_${cell.row.original.id}`}>
+      <ProjectEditAction project={cell.row.original} />
+      <ProjectDeleteAction projectId={cell.row.original.id} />
+    </ActionDropdown>
+  )
+}
 
 export const projectColumns: ColumnDef<components['schemas']['Project']>[] = [
   {
@@ -29,5 +44,9 @@ export const projectColumns: ColumnDef<components['schemas']['Project']>[] = [
       const updatedAt = row.original.updatedAt
       return updatedAt ? new Date(updatedAt).toLocaleString() : '-'
     },
+  },
+  {
+    header: 'Actions',
+    cell: ProjectActionColumn,
   },
 ]
