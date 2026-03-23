@@ -10,3 +10,18 @@ type FormProps<T> = {
   isLoading?: boolean
   onSubmit: (data: T) => void
 }
+
+
+type UploadResult = {
+  folder: string
+  original: {
+    path: string
+    contentType: string
+    url: string
+  }
+  webp: {
+    path: string
+    contentType: string
+    url: string
+  }
+}

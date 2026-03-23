@@ -6,6 +6,7 @@ tags:
   - name: Users
   - name: Projects
   - name: Categories
+  - name: Upload
 paths:
   /categories:
     get:
@@ -347,6 +348,52 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       tags:
         - Projects
+  /upload/image:
+    post:
+      operationId: UploadService_uploadImage
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - message
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/UploadResult'
+                  error:
+                    type: string
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Upload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadImageRequest'
+            encoding:
+              file:
+                contentType: '*/*'
   /users:
     get:
       operationId: UsersService_getUsers
@@ -755,6 +802,41 @@ components:
           type: string
         description:
           type: string
+    UploadAsset:
+      type: object
+      required:
+        - path
+        - contentType
+        - url
+      properties:
+        path:
+          type: string
+        contentType:
+          type: string
+        url:
+          type: string
+    UploadImageRequest:
+      type: object
+      properties:
+        folder:
+          type: string
+        file: {}
+      required:
+        - folder
+        - file
+    UploadResult:
+      type: object
+      required:
+        - folder
+        - original
+        - webp
+      properties:
+        folder:
+          type: string
+        original:
+          $ref: '#/components/schemas/UploadAsset'
+        webp:
+          $ref: '#/components/schemas/UploadAsset'
     User:
       type: object
       required:
