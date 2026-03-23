@@ -12,6 +12,10 @@ interface ProjectsService {
     @body body: ProjectCreateRequest,
   ): ApiResponse<Project> | ErrorResponse400 | ErrorResponse500;
 
+  @patch @route("/sort") sortProjects(
+    @body body: ProjectSortRequest,
+  ): ApiResponse<Project[]> | ErrorResponse400 | ErrorResponse500;
+
   @put updateProject(@path id: string, @body body: ProjectUpdateRequest):
     | ApiResponse<Project>
     | ErrorResponse400

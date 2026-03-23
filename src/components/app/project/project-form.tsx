@@ -40,7 +40,6 @@ const formSchema = z.object({
   description: z.string(),
   tags: z.array(z.string()),
   galleries: z.array(z.union([z.string(), z.instanceof(File)])),
-  displayOrder: z.number().positive('Display order must be greater than 0'),
 })
 
 const normalizeOptional = (value?: string) => {
@@ -62,7 +61,6 @@ export type ProjectFormValue = {
   description?: string
   tags: string[]
   galleries: GalleryInputValue[]
-  displayOrder: number
 }
 
 export default function ProjectForm({
@@ -122,7 +120,6 @@ export default function ProjectForm({
           description: normalizeOptional(value.description),
           tags: value.tags,
           galleries: galleryUrls,
-          displayOrder: value.displayOrder,
         })
       } catch (error) {
         toast.error((error as Error).message || 'Image upload failed')
@@ -147,7 +144,6 @@ export default function ProjectForm({
       description: value?.description || '',
       tags: value?.tags || [],
       galleries: value?.galleries || [],
-      displayOrder: value?.displayOrder || 1,
     },
   })
 
@@ -364,33 +360,6 @@ export default function ProjectForm({
               />
             </Field>
           )}
-        </form.Field>
-
-        <form.Field name="displayOrder">
-          {(field) => {
-            const isInvalid =
-              !field.state.meta.isValid && field.state.meta.isTouched
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Display Order</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="number"
-                  min={1}
-                  value={String(field.state.value)}
-                  onBlur={field.handleBlur}
-                  onChange={(e) =>
-                    field.handleChange(Number(e.target.value || 1))
-                  }
-                  aria-invalid={isInvalid}
-                  placeholder="1"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            )
-          }}
         </form.Field>
 
         <form.Field name="tags">

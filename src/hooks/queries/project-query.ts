@@ -50,6 +50,20 @@ export const useProjectQueries = () => {
       }
     },
   })
+  const sortProjects = $api.useMutation('patch', '/projects/sort', {
+    onSettled(data, error) {
+      if (data) {
+        toast.success('Project order updated successfully!')
+        projects.refetch()
+        return
+      }
+      if (error) {
+        toast.error(
+          `Failed to update project order: ${error.message || 'Unknown error'}`,
+        )
+      }
+    },
+  })
   const uploadImage = $api.useMutation('post', '/upload/image', {
     onSettled(data, error) {
       if (error) {
@@ -107,6 +121,7 @@ export const useProjectQueries = () => {
     createdProject,
     updatedProject,
     deletedProject,
+    sortProjects,
     uploadImage,
     //
     categories,

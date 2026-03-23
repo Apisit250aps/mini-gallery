@@ -144,13 +144,7 @@ export function DataSortable<T extends { id: string }>({
         const newIndex = dataIds.indexOf(over.id)
         const newData = arrayMove(data, oldIndex, newIndex)
 
-        // Get current page data based on pagination
-        const { pageIndex, pageSize } = table.getState().pagination
-        const startIndex = pageIndex * pageSize
-        const endIndex = startIndex + pageSize
-        const paginatedData = newData.slice(startIndex, endIndex)
-
-        onDataChange?.(paginatedData)
+        onDataChange?.(newData)
         return newData
       })
     }

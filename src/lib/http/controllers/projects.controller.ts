@@ -29,6 +29,9 @@ export async function getProjects(context: Context) {
 export async function createProject(context: Context) {
   try {
     const body = await context.req.json()
+    const count = await projectRepository.count()
+    const nextDisplayOrder = count + 1
+
     const {
       title,
       location,
@@ -43,8 +46,11 @@ export async function createProject(context: Context) {
       description,
       tags,
       galleries,
-      displayOrder,
+      orderDisplay,
+      displayOrder = nextDisplayOrder,
     } = body
+
+    const normalizedDisplayOrder = orderDisplay || displayOrder
 
     const validate = await projectRepository.validate({
       title,
@@ -61,7 +67,7 @@ export async function createProject(context: Context) {
       description,
       tags,
       galleries,
-      displayOrder,
+      displayOrder: normalizedDisplayOrder,
     })
 
     if (!validate) {
@@ -89,7 +95,7 @@ export async function createProject(context: Context) {
       description: validate.description,
       tags: validate.tags,
       galleries: validate.galleries,
-      displayOrder: validate.displayOrder,
+      displayOrder: validate.displayOrder || nextDisplayOrder,
     })
 
     return context.json<ApiResponse>(
@@ -105,6 +111,49 @@ export async function createProject(context: Context) {
       {
         success: false,
         message: 'Failed to create project',
+        error: (error as Error).message || 'Unknown error',
+      },
+      500,
+    )
+  }
+}
+
+export async function sortProjects(context: Context) {
+  try {
+    const body = await context.req.json()
+    const projectIds = Array.isArray(body?.projectIds)
+      ? body.projectIds.filter(
+          (id: unknown): id is string => typeof id === 'string',
+        )
+      : []
+
+    if (!projectIds.length) {
+      return context.json<ApiResponse>(
+        {
+          success: false,
+          message: 'Validation failed',
+          error: 'projectIds is required',
+        },
+        400,
+      )
+    }
+
+    await projectRepository.sortByDisplayOrder(projectIds)
+    const projects = await projectRepository.findAllWithCategory({})
+
+    return context.json<ApiResponse>(
+      {
+        success: true,
+        message: 'Projects sorted successfully',
+        data: projects,
+      },
+      200,
+    )
+  } catch (error) {
+    return context.json<ApiResponse>(
+      {
+        success: false,
+        message: 'Failed to sort projects',
         error: (error as Error).message || 'Unknown error',
       },
       500,

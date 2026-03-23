@@ -33,7 +33,7 @@ model ProjectCreateRequest {
   category?: string | null;
   tags: string[];
   galleries: string[];
-  displayOrder: int32;
+  displayOrder?: int32;
   location?: string;
   type?: string;
   program?: string;
@@ -43,6 +43,10 @@ model ProjectCreateRequest {
   design?: string;
   completion?: string;
   description?: string;
+}
+
+model ProjectSortRequest {
+  projectIds: string[];
 }
 
 model ProjectUpdateRequest {

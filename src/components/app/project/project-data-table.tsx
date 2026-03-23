@@ -1,19 +1,31 @@
 'use client'
 
-import { DataTable } from '@/components/share/table/data-table'
+import { DataSortable } from '@/components/share/table/data-sortable'
 import { useProjectQueries } from '@/hooks/queries/project-query'
-import React, { useMemo } from 'react'
+import { components } from '@/lib/client/api/v1'
+import React, { useCallback, useMemo } from 'react'
 import { projectColumns } from './project-data-columns'
 
 export default function ProjectDataTable() {
-  const { projects } = useProjectQueries()
+  const { projects, sortProjects } = useProjectQueries()
   const columns = useMemo(() => projectColumns, [])
 
+  const onDataChange = useCallback(
+    async (newData: components['schemas']['Project'][]) => {
+      await sortProjects.mutateAsync({
+        body: {
+          projectIds: newData.map((project) => project.id),
+        },
+      })
+    },
+    [sortProjects],
+  )
+
   return (
-    <DataTable
+    <DataSortable
       data={projects.data || []}
       columns={columns}
-      isLoading={projects.isPending}
+      onDataChange={onDataChange}
     />
   )
 }

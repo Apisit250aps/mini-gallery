@@ -1,4 +1,5 @@
 import { ActionDropdown } from '@/components/share/overlay/action-dropdown'
+import { DragHandle } from '@/components/share/table/data-sortable'
 import { components } from '@/lib/client/api/v1'
 import { Cell, ColumnDef } from '@tanstack/react-table'
 import { ProjectDeleteAction, ProjectEditAction } from './project-actions'
@@ -17,6 +18,11 @@ const ProjectActionColumn = ({
 }
 
 export const projectColumns: ColumnDef<components['schemas']['Project']>[] = [
+  {
+    id: 'drag',
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
   {
     accessorKey: 'title',
     header: 'Title',

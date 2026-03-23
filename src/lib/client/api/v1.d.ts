@@ -52,6 +52,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/projects/sort": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ProjectsService_sortProjects"];
+        trace?: never;
+    };
     "/projects/{id}": {
         parameters: {
             query?: never;
@@ -189,7 +205,7 @@ export interface components {
             tags: string[];
             galleries: string[];
             /** Format: int32 */
-            displayOrder: number;
+            displayOrder?: number;
             location?: string;
             type?: string;
             program?: string;
@@ -199,6 +215,9 @@ export interface components {
             design?: string;
             completion?: string;
             description?: string;
+        };
+        ProjectSortRequest: {
+            projectIds: string[];
         };
         ProjectUpdateRequest: {
             title?: string;
@@ -505,6 +524,53 @@ export interface operations {
                         success: boolean;
                         message: string;
                         data?: components["schemas"]["Project"];
+                        error?: string;
+                    };
+                };
+            };
+            /** @description The server could not understand the request due to invalid syntax. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    ProjectsService_sortProjects: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectSortRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                        message: string;
+                        data?: components["schemas"]["Project"][];
                         error?: string;
                     };
                 };

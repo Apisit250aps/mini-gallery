@@ -49,7 +49,6 @@ export default function ProjectEditView() {
           description: data.description,
           tags: data.tags,
           galleries: data.galleries as string[],
-          displayOrder: data.displayOrder,
         },
       })
 
@@ -113,7 +112,6 @@ export default function ProjectEditView() {
               design: project.design,
               completion: project.completion,
               description: project.description,
-              displayOrder: project.displayOrder,
               tags: project.tags,
               galleries: project.galleries as string[],
             }}

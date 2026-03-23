@@ -37,6 +37,7 @@ class ProjectRepository extends BaseRepo<typeof ProjectEntity> {
     return collection
       .aggregate([
         { $match: filter },
+        { $sort: { displayOrder: 1, createdAt: 1 } },
         {
           $lookup: {
             from: 'categories',
@@ -48,6 +49,31 @@ class ProjectRepository extends BaseRepo<typeof ProjectEntity> {
         { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
       ])
       .toArray()
+  }
+
+  async sortByDisplayOrder(projectIds: string[]) {
+    if (!projectIds.length) {
+      return 0
+    }
+
+    const collection = await this.getCollection()
+    const now = new Date()
+
+    const result = await collection.bulkWrite(
+      projectIds.map((id, index) => ({
+        updateOne: {
+          filter: { id } as Filter<Project>,
+          update: {
+            $set: {
+              displayOrder: index + 1,
+              updatedAt: now,
+            },
+          },
+        },
+      })),
+    )
+
+    return result.modifiedCount
   }
 }
 

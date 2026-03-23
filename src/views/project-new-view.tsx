@@ -18,10 +18,14 @@ import React, { useCallback } from 'react'
 
 export default function ProjectNewView() {
   const router = useRouter()
-  const { createdProject } = useProjectQueries()
+  const { createdProject, projects } = useProjectQueries()
 
   const onSubmit = useCallback(
     async (data: ProjectFormValue) => {
+      const maxDisplayOrder = (projects.data || []).reduce((max, project) => {
+        return Math.max(max, project.displayOrder || 0)
+      }, 0)
+
       await createdProject.mutateAsync({
         body: {
           title: data.title,
@@ -38,13 +42,13 @@ export default function ProjectNewView() {
           description: data.description,
           tags: data.tags,
           galleries: data.galleries as string[],
-          displayOrder: data.displayOrder,
+          displayOrder: maxDisplayOrder + 1,
         },
       })
 
       router.push('/admin/projects')
     },
-    [createdProject, router],
+    [createdProject, projects.data, router],
   )
 
   return (
