@@ -70,9 +70,6 @@ export default abstract class BaseRepo<TSchema extends AnyZodObject> {
     const result = partial
       ? this.schema.partial().parse(data)
       : this.schema.parse(data)
-    if (!result.success) {
-      throw new Error(`Validation failed: ${result.message}`)
-    }
     return result as Entity<TSchema>
   }
 

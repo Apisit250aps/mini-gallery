@@ -1,8 +1,8 @@
 'use client'
+import React from 'react'
+//
 import { useForm } from '@tanstack/react-form'
 import { CategoryEntity } from '@/core/entities/category.entity'
-import React from 'react'
-import { Card } from '@/components/ui/card'
 import {
   Field,
   FieldError,
@@ -10,21 +10,27 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Category } from '@/core/repositories/category.repo'
 
 const formSchema = CategoryEntity.pick({
   name: true,
 })
 
-export default function CategoryForm() {
+export default function CategoryForm({
+  value,
+  isLoading = false,
+  onSubmit,
+}: FormProps<Pick<Category, 'name'>>) {
   const form = useForm({
-    onSubmit: (values) => {
-      console.log(values)
+    onSubmit: ({ value }) => {
+      onSubmit(value)
     },
     validators: {
       onSubmit: formSchema,
     },
     defaultValues: {
-      name: '',
+      name: value?.name || '',
     },
   })
   return (
@@ -58,6 +64,11 @@ export default function CategoryForm() {
           }}
         </form.Field>
       </FieldGroup>
+      <div className="flex justify-end">
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Creating...' : 'Create Category'}
+        </Button>
+      </div>
     </form>
   )
 }

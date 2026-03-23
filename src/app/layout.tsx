@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
+import { OverlayProvider } from '@/hooks/contexts/use-overlay'
+import { Toaster } from '@/components/ui/sonner'
 
 const figtree = Figtree({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -43,7 +45,10 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <SessionProvider session={session} refetchOnWindowFocus={false}>
-          <TooltipProvider>{children}</TooltipProvider>
+          <OverlayProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </OverlayProvider>
+          <Toaster position="top-right" />
         </SessionProvider>
       </body>
     </html>
