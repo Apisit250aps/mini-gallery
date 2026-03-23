@@ -56,7 +56,7 @@ export default function NewProjectPage() {
         },
       })
 
-      router.push('/admin')
+      router.push('/admin/projects')
     },
     [createdProject, router],
   )
@@ -82,7 +82,7 @@ export default function NewProjectPage() {
               variant="outline"
               disabled={createdProject.isPending}
             >
-              <Link href="/admin">Back to Project List</Link>
+              <Link href="/admin/projects">Back to Project List</Link>
             </Button>
           </div>
         </CardContent>
