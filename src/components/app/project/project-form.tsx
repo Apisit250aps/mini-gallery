@@ -23,6 +23,7 @@ import { useProjectQueries } from '@/hooks/queries/project-query'
 import ProjectImageInput, {
   GalleryInputValue,
 } from '@/components/app/project/project-image-input'
+import ProjectTagsInput from '@/components/app/project/project-tags-input'
 
 const formSchema = z.object({
   title: z.string().min(1, 'Project title is required'),
@@ -354,23 +355,11 @@ export default function ProjectForm({
         <form.Field name="tags">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>
-                Tags (comma separated)
-              </FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value.join(', ')}
-                onBlur={field.handleBlur}
-                onChange={(e) => {
-                  const parsed = e.target.value
-                    .split(',')
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                  field.handleChange(parsed)
-                }}
-                placeholder="modern, architecture, gallery"
-                autoComplete="off"
+              <FieldLabel htmlFor={field.name}>Tags</FieldLabel>
+              <ProjectTagsInput
+                value={field.state.value}
+                onChange={field.handleChange}
+                disabled={isLoading}
               />
             </Field>
           )}
