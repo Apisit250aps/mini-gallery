@@ -48,7 +48,7 @@ export default function EditProjectPage() {
           completion: data.completion,
           description: data.description,
           tags: data.tags,
-          galleries: data.galleries,
+          galleries: data.galleries as string[],
           displayOrder: data.displayOrder,
         },
       })
@@ -115,7 +115,7 @@ export default function EditProjectPage() {
               description: project.description,
               displayOrder: project.displayOrder,
               tags: project.tags,
-              galleries: project.galleries,
+              galleries: project.galleries as string[],
             }}
             onSubmit={onSubmit}
             isLoading={updatedProject.isPending}

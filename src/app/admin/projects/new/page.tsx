@@ -37,7 +37,7 @@ export default function NewProjectPage() {
           completion: data.completion,
           description: data.description,
           tags: data.tags,
-          galleries: data.galleries,
+          galleries: data.galleries as string[],
           displayOrder: data.displayOrder,
         },
       })

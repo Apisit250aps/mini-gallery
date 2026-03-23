@@ -13,16 +13,26 @@ import { User } from '@/core/repositories/user.repo'
 import { Checkbox } from '@/components/ui/checkbox'
 import z from 'zod'
 
-const createSchema = z.object({
-  name: z.string().trim().min(1),
-  password: z.string().min(1),
-  isAdmin: z.boolean(),
-  isActive: z.boolean(),
-})
+const createSchema = z
+  .object({
+    name: z.string().trim().min(1),
+    password: z.union([z.string(), z.undefined()]),
+    isAdmin: z.boolean(),
+    isActive: z.boolean(),
+  })
+  .superRefine((data, context) => {
+    if (!data.password?.trim()) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['password'],
+        message: 'Password is required',
+      })
+    }
+  })
 
 const updateSchema = z.object({
   name: z.string().trim().min(1),
-  password: z.string().optional(),
+  password: z.union([z.string(), z.undefined()]),
   isAdmin: z.boolean(),
   isActive: z.boolean(),
 })
@@ -46,7 +56,7 @@ export default function UserForm({
     },
     defaultValues: {
       name: value?.name || '',
-      password: value?.password || '',
+      password: value?.password,
       isAdmin: value?.isAdmin || false,
       isActive: value?.isActive ?? true,
     },

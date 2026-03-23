@@ -5,7 +5,10 @@ const envKeyFile = process.env.GCS_KEYFILE_PATH
 if (!envKeyFile) {
   throw new Error('GCS_KEYFILE_PATH environment variable is not defined')
 }
-const keyFilename = path.join(process.cwd(), envKeyFile)
+const keyFilename = path.join(
+  /*turbopackIgnore: true*/ process.cwd(),
+  envKeyFile,
+)
 // storage
 // bucket
 const bucketName = process.env.GCS_BUCKET_NAME
