@@ -631,7 +631,9 @@ components:
         slug:
           type: string
         category:
-          type: string
+          anyOf:
+            - $ref: '#/components/schemas/Category'
+            - type: 'null'
         tags:
           type: array
           items:
@@ -672,7 +674,6 @@ components:
       required:
         - title
         - slug
-        - category
         - tags
         - galleries
         - displayOrder
@@ -682,7 +683,9 @@ components:
         slug:
           type: string
         category:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
         tags:
           type: array
           items:
@@ -712,7 +715,6 @@ components:
           type: string
         description:
           type: string
-      description: The template for omitting properties.
     ProjectUpdateRequest:
       type: object
       properties:
@@ -721,7 +723,9 @@ components:
         slug:
           type: string
         category:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
         tags:
           type: array
           items:
@@ -751,7 +755,6 @@ components:
           type: string
         description:
           type: string
-      description: The template for adding optional properties.
     User:
       type: object
       required:

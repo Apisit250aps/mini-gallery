@@ -12,17 +12,26 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Project } from '@/core/repositories/project.repo'
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { useProjectQueries } from '@/hooks/queries/project-query'
+
 const formSchema = ProjectEntity.pick({
   title: true,
   category: true,
-  displayOrder: true,
   tags: true,
   galleries: true,
 })
 
 type ProjectFormValue = Pick<
   Project,
-  'title' | 'category' | 'displayOrder' | 'tags' | 'galleries'
+  'title' | 'category' | 'tags' | 'galleries'
 >
 
 export default function ProjectForm({
@@ -30,6 +39,7 @@ export default function ProjectForm({
   isLoading = false,
   onSubmit,
 }: FormProps<ProjectFormValue>) {
+  const { categories } = useProjectQueries()
   const form = useForm({
     onSubmit: ({ value }) => {
       onSubmit(value)
@@ -40,7 +50,6 @@ export default function ProjectForm({
     defaultValues: {
       title: value?.title || '',
       category: value?.category || '',
-      displayOrder: value?.displayOrder || 1,
       tags: value?.tags || [],
       galleries: value?.galleries || [],
     },
@@ -52,8 +61,9 @@ export default function ProjectForm({
         e.preventDefault()
         form.handleSubmit()
       }}
+      className="gap-4"
     >
-      <FieldGroup>
+      <FieldGroup className="gap-4">
         <form.Field name="title">
           {(field) => {
             const isInvalid =
@@ -84,41 +94,23 @@ export default function ProjectForm({
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Category ID</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
+                <Select
                   value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="Enter category id"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            )
-          }}
-        </form.Field>
-
-        <form.Field name="displayOrder">
-          {(field) => {
-            const isInvalid =
-              !field.state.meta.isValid && field.state.meta.isTouched
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Display Order</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="number"
-                  min={1}
-                  value={String(field.state.value)}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value))}
-                  aria-invalid={isInvalid}
-                  placeholder="Enter display order"
-                  autoComplete="off"
-                />
+                  onValueChange={field.handleChange}
+                >
+                  <SelectTrigger className="w-45">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {categories.data?.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             )
@@ -126,7 +118,7 @@ export default function ProjectForm({
         </form.Field>
       </FieldGroup>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-4">
         <Button type="submit" disabled={isLoading}>
           {isLoading ? 'Saving...' : 'Save Project'}
         </Button>

@@ -1,5 +1,6 @@
 import BaseRepo, { CreateInput, Entity, UpdateInput } from '@/lib/repository'
 import { ProjectEntity } from '../entities/project.entity'
+import { Filter } from 'mongodb'
 
 type Project = Entity<typeof ProjectEntity>
 type ProjectCreate = CreateInput<typeof ProjectEntity>
@@ -29,6 +30,24 @@ class ProjectRepository extends BaseRepo<typeof ProjectEntity> {
     }
 
     return super.create(validate)
+  }
+
+  async findAllWithCategory(filter: Filter<Project> = {}) {
+    const collection = await this.getCollection()
+    return collection
+      .aggregate([
+        { $match: filter },
+        {
+          $lookup: {
+            from: 'categories',
+            localField: 'category',
+            foreignField: 'id',
+            as: 'category',
+          },
+        },
+        { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+      ])
+      .toArray()
   }
 }
 

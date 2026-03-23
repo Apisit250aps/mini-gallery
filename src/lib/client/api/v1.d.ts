@@ -147,7 +147,7 @@ export interface components {
             id: string;
             title: string;
             slug: string;
-            category: string;
+            category: components["schemas"]["Category"] | null;
             tags: string[];
             galleries: string[];
             /** Format: int32 */
@@ -166,11 +166,10 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
-        /** @description The template for omitting properties. */
         ProjectCreateRequest: {
             title: string;
             slug: string;
-            category: string;
+            category?: string | null;
             tags: string[];
             galleries: string[];
             /** Format: int32 */
@@ -185,11 +184,10 @@ export interface components {
             completion?: string;
             description?: string;
         };
-        /** @description The template for adding optional properties. */
         ProjectUpdateRequest: {
             title?: string;
             slug?: string;
-            category?: string;
+            category?: string | null;
             tags?: string[];
             galleries?: string[];
             /** Format: int32 */

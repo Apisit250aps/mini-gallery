@@ -19,7 +19,6 @@ export const ProjectCreateAction = () => {
     async (data: {
       title: string
       category: string
-      displayOrder: number
       tags: string[]
       galleries: string[]
     }) => {
@@ -28,7 +27,7 @@ export const ProjectCreateAction = () => {
           title: data.title,
           slug: data.title,
           category: data.category,
-          displayOrder: data.displayOrder,
+          displayOrder: 0,
           tags: data.tags,
           galleries: data.galleries,
         },
@@ -61,7 +60,6 @@ export const ProjectEditAction = ({
     async (data: {
       title: string
       category: string
-      displayOrder: number
       tags: string[]
       galleries: string[]
     }) => {
@@ -99,8 +97,8 @@ export const ProjectEditAction = ({
       <ProjectForm
         value={{
           title: project.title,
-          category: project.category,
-          displayOrder: project.displayOrder,
+          category: project.category?.id || '',
+
           tags: project.tags,
           galleries: project.galleries,
         }}

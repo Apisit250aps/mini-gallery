@@ -4,7 +4,7 @@ import { projectRepository } from '../../../core/repositories'
 
 export async function getProjects(context: Context) {
   try {
-    const projects: Project[] = await projectRepository.findAll({})
+    const projects = await projectRepository.findAllWithCategory({})
 
     return context.json<ApiResponse>(
       {

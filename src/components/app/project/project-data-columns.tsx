@@ -22,7 +22,7 @@ export const projectColumns: ColumnDef<components['schemas']['Project']>[] = [
     header: 'Title',
   },
   {
-    accessorKey: 'category',
+    accessorKey: 'category.name',
     header: 'Category',
   },
   {
