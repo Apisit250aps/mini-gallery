@@ -1,11 +1,12 @@
 import BaseRepo, { CreateInput, Entity, UpdateInput } from '@/lib/repository'
 import { ProjectEntity } from '../entities/project.entity'
 import { Filter } from 'mongodb'
+import { Category } from './category.repo'
 
 type Project = Entity<typeof ProjectEntity>
 type ProjectCreate = CreateInput<typeof ProjectEntity>
 type ProjectUpdate = UpdateInput<typeof ProjectEntity>
-
+type ProjectWithCategory = Project & { category: Category | null }
 class ProjectRepository extends BaseRepo<typeof ProjectEntity> {
   constructor() {
     super({
@@ -32,18 +33,22 @@ class ProjectRepository extends BaseRepo<typeof ProjectEntity> {
     return super.create(validate)
   }
 
-  async findAllWithCategory(filter: Filter<Project> = {}) {
+  async findAllWithCategory(
+    filter: Filter<Project> = {},
+  ): Promise<ProjectWithCategory[]> {
     const collection = await this.getCollection()
     return collection
-      .aggregate([
+      .aggregate<ProjectWithCategory>([
         { $match: filter },
         { $sort: { displayOrder: 1, createdAt: 1 } },
+        { $project: { _id: 0 } },
         {
           $lookup: {
             from: 'categories',
             localField: 'category',
             foreignField: 'id',
             as: 'category',
+            pipeline: [{ $project: { _id: 0 } }],
           },
         },
         { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
@@ -77,5 +82,5 @@ class ProjectRepository extends BaseRepo<typeof ProjectEntity> {
   }
 }
 
-export type { Project, ProjectCreate, ProjectUpdate }
+export type { Project, ProjectCreate, ProjectUpdate, ProjectWithCategory }
 export default ProjectRepository

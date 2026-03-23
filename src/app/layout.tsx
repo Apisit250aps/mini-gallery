@@ -7,6 +7,8 @@ import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
 import { OverlayProvider } from '@/hooks/contexts/use-overlay'
 import { Toaster } from '@/components/ui/sonner'
+import { ProjectProvider } from '@/hooks/contexts/project-provider'
+import { categoryRepository, projectRepository } from '@/core/repositories'
 
 const figtree = Figtree({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -31,6 +33,10 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const session = await auth()
+  const projects = await projectRepository.findAllWithCategory()
+  const categories = await categoryRepository.findAll()
+  console.log('projects', projects)
+  console.log('categories', categories)
   return (
     <html
       lang="en"
@@ -44,12 +50,14 @@ export default async function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <SessionProvider session={session} refetchOnWindowFocus={false}>
-          <OverlayProvider>
-            <TooltipProvider>{children}</TooltipProvider>
-          </OverlayProvider>
-          <Toaster position="top-right" />
-        </SessionProvider>
+        <ProjectProvider initProjects={projects} initCategories={categories}>
+          <SessionProvider session={session} refetchOnWindowFocus={false}>
+            <OverlayProvider>
+              <TooltipProvider>{children}</TooltipProvider>
+            </OverlayProvider>
+            <Toaster position="top-right" />
+          </SessionProvider>
+        </ProjectProvider>
       </body>
     </html>
   )
