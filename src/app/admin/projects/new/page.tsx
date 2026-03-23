@@ -15,7 +15,6 @@ import { useProjectQueries } from '@/hooks/queries/project-query'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useCallback } from 'react'
-import { toast } from 'sonner'
 
 export default function NewProjectPage() {
   const router = useRouter()
@@ -23,19 +22,6 @@ export default function NewProjectPage() {
 
   const onSubmit = useCallback(
     async (data: ProjectFormValue) => {
-      const files = data.galleries.filter(
-        (item): item is File => item instanceof File,
-      )
-
-      if (files.length > 0) {
-        toast.error('Please upload images first and submit using URL values.')
-        return
-      }
-
-      const galleryUrls = data.galleries.filter(
-        (item): item is string => typeof item === 'string',
-      )
-
       await createdProject.mutateAsync({
         body: {
           title: data.title,
@@ -51,7 +37,7 @@ export default function NewProjectPage() {
           completion: data.completion,
           description: data.description,
           tags: data.tags,
-          galleries: galleryUrls,
+          galleries: data.galleries,
           displayOrder: data.displayOrder,
         },
       })

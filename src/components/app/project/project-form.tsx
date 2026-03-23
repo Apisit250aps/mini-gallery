@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from '@tanstack/react-form'
 import {
   Field,
@@ -24,6 +24,7 @@ import ProjectImageInput, {
   GalleryInputValue,
 } from '@/components/app/project/project-image-input'
 import ProjectTagsInput from '@/components/app/project/project-tags-input'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   title: z.string().min(1, 'Project title is required'),
@@ -70,24 +71,66 @@ export default function ProjectForm({
   onSubmit,
 }: FormProps<ProjectFormValue>) {
   const { categories } = useProjectQueries()
+  const [isUploading, setIsUploading] = useState(false)
+  const isMutating = isLoading || isUploading
   const form = useForm({
-    onSubmit: ({ value }) => {
-      onSubmit({
-        title: value.title,
-        category: value.category,
-        location: normalizeOptional(value.location),
-        type: normalizeOptional(value.type),
-        program: normalizeOptional(value.program),
-        client: normalizeOptional(value.client),
-        siteArea: normalizeOptional(value.siteArea),
-        builtArea: normalizeOptional(value.builtArea),
-        design: normalizeOptional(value.design),
-        completion: normalizeOptional(value.completion),
-        description: normalizeOptional(value.description),
-        tags: value.tags,
-        galleries: value.galleries,
-        displayOrder: value.displayOrder,
-      })
+    onSubmit: async ({ value }) => {
+      const galleryUrls: string[] = []
+
+      try {
+        setIsUploading(true)
+
+        for (const item of value.galleries) {
+          if (typeof item === 'string') {
+            galleryUrls.push(item)
+            continue
+          }
+
+          const formData = new FormData()
+          formData.append('folder', value.title || 'projects')
+          formData.append('file', item)
+
+          const response = await fetch('/api/upload/image', {
+            method: 'POST',
+            body: formData,
+          })
+
+          const payload = (await response.json()) as ApiResponse<UploadResult>
+          if (!response.ok || !payload.success) {
+            throw new Error(payload.error || payload.message || 'Upload failed')
+          }
+
+          const uploadedUrl =
+            payload.data?.webp?.url || payload.data?.original?.url
+
+          if (!uploadedUrl) {
+            throw new Error('Uploaded image URL is missing')
+          }
+
+          galleryUrls.push(uploadedUrl)
+        }
+
+        onSubmit({
+          title: value.title,
+          category: value.category,
+          location: normalizeOptional(value.location),
+          type: normalizeOptional(value.type),
+          program: normalizeOptional(value.program),
+          client: normalizeOptional(value.client),
+          siteArea: normalizeOptional(value.siteArea),
+          builtArea: normalizeOptional(value.builtArea),
+          design: normalizeOptional(value.design),
+          completion: normalizeOptional(value.completion),
+          description: normalizeOptional(value.description),
+          tags: value.tags,
+          galleries: galleryUrls,
+          displayOrder: value.displayOrder,
+        })
+      } catch (error) {
+        toast.error((error as Error).message || 'Image upload failed')
+      } finally {
+        setIsUploading(false)
+      }
     },
     validators: {
       onSubmit: formSchema,
@@ -359,7 +402,7 @@ export default function ProjectForm({
               <ProjectTagsInput
                 value={field.state.value}
                 onChange={field.handleChange}
-                disabled={isLoading}
+                disabled={isMutating}
               />
             </Field>
           )}
@@ -372,7 +415,7 @@ export default function ProjectForm({
               <ProjectImageInput
                 value={field.state.value}
                 onChange={field.handleChange}
-                disabled={isLoading}
+                disabled={isMutating}
               />
             </Field>
           )}
@@ -380,8 +423,8 @@ export default function ProjectForm({
       </FieldGroup>
 
       <div className="flex justify-end mt-4">
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save Project'}
+        <Button type="submit" disabled={isMutating}>
+          {isMutating ? 'Saving...' : 'Save Project'}
         </Button>
       </div>
     </form>

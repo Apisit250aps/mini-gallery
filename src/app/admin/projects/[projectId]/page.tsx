@@ -15,7 +15,6 @@ import { useProjectQueries } from '@/hooks/queries/project-query'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useCallback } from 'react'
-import { toast } from 'sonner'
 
 export default function EditProjectPage() {
   const params = useParams<{ projectId: string }>()
@@ -28,19 +27,6 @@ export default function EditProjectPage() {
   const onSubmit = useCallback(
     async (data: ProjectFormValue) => {
       if (!projectId) return
-
-      const files = data.galleries.filter(
-        (item): item is File => item instanceof File,
-      )
-
-      if (files.length > 0) {
-        toast.error('Please upload images first and submit using URL values.')
-        return
-      }
-
-      const galleryUrls = data.galleries.filter(
-        (item): item is string => typeof item === 'string',
-      )
 
       await updatedProject.mutateAsync({
         params: {
@@ -62,7 +48,7 @@ export default function EditProjectPage() {
           completion: data.completion,
           description: data.description,
           tags: data.tags,
-          galleries: galleryUrls,
+          galleries: data.galleries,
           displayOrder: data.displayOrder,
         },
       })

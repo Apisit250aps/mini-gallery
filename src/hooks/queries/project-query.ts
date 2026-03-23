@@ -50,6 +50,15 @@ export const useProjectQueries = () => {
       }
     },
   })
+  const uploadImage = $api.useMutation('post', '/upload/image', {
+    onSettled(data, error) {
+      if (error) {
+        toast.error(
+          `Failed to upload image: ${error.message || 'Unknown error'}`,
+        )
+      }
+    },
+  })
   const createdCategory = $api.useMutation('post', '/categories', {
     onSettled(data, error) {
       if (data) {
@@ -98,6 +107,7 @@ export const useProjectQueries = () => {
     createdProject,
     updatedProject,
     deletedProject,
+    uploadImage,
     //
     categories,
     createdCategory,
