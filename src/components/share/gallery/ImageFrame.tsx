@@ -25,6 +25,7 @@ export default function ImageFrame({
         src={coverImage}
         alt={coverImage.slice(-3)}
         fill
+        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
         loading={loading}
         priority={priority}
         className="object-cover transition-all duration-700 ease-out group-hover:scale-105 md:group-hover:scale-105"

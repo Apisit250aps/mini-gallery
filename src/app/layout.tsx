@@ -35,8 +35,6 @@ export default async function RootLayout({
   const session = await auth()
   const projects = await projectRepository.findAllWithCategory()
   const categories = await categoryRepository.findAll()
-  console.log('projects', projects)
-  console.log('categories', categories)
   return (
     <html
       lang="en"
