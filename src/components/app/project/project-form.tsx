@@ -76,10 +76,8 @@ export default function ProjectForm({
   const form = useForm({
     onSubmit: async ({ value }) => {
       const galleryUrls: string[] = []
-
       try {
         setIsUploading(true)
-
         for (const item of value.galleries) {
           if (typeof item === 'string') {
             galleryUrls.push(item)
