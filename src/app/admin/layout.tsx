@@ -1,7 +1,7 @@
-import { AppSidebar } from '@/components/app-sidebar'
-import { SiteHeader } from '@/components/site-header'
+import { AppSidebar } from '@/components/share/app-sidebar'
+import { SiteHeader } from '@/components/share/site-header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import TanstackQueryProvider from '@/hooks/contexts/tanstack-query';
+import TanstackQueryProvider from '@/hooks/contexts/tanstack-query'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
