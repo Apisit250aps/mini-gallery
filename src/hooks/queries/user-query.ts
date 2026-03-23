@@ -1,17 +1,17 @@
 import { $api } from '@/lib/client'
 
 export const useUserQueries = () => {
-  const list = $api.useQuery('get', '/users', undefined, {
+  const users = $api.useQuery('get', '/users', undefined, {
     select: (res) => res.data || [],
   })
-  const created = $api.useMutation('post', '/users', {})
-  const updated = $api.useMutation('put', '/users/{id}')
-  const deleted = $api.useMutation('delete', '/users/{id}')
+  const createdUser = $api.useMutation('post', '/users', {})
+  const updatedUser = $api.useMutation('put', '/users/{id}')
+  const deletedUser = $api.useMutation('delete', '/users/{id}')
 
   return {
-    list,
-    created,
-    updated,
-    deleted,
+    users,
+    createdUser,
+    updatedUser,
+    deletedUser,
   }
 }

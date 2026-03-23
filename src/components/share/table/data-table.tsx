@@ -38,6 +38,7 @@ import { Label } from '@/components/ui/label'
 export type DataTableProps<T> = {
   data: T[]
   columns: ColumnDef<T>[]
+  isLoading?: boolean
 }
 
 function DataTableRow<T>({ row }: { row: Row<T> }) {
@@ -55,7 +56,11 @@ function DataTableRow<T>({ row }: { row: Row<T> }) {
   )
 }
 
-export function DataTable<T>({ data, columns }: DataTableProps<T>) {
+export function DataTable<T>({
+  data,
+  columns,
+  isLoading = false,
+}: DataTableProps<T>) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -96,7 +101,13 @@ export function DataTable<T>({ data, columns }: DataTableProps<T>) {
           ))}
         </TableHeader>
         <TableBody className="**:data-[slot=table-cell]:first:w-8">
-          {table.getRowModel().rows?.length ? (
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
             <>
               {table.getRowModel().rows.map((row) => (
                 <DataTableRow key={row.id} row={row} />
