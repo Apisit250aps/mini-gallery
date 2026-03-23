@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import { useForm } from '@tanstack/react-form'
-import { ProjectEntity } from '@/core/entities/project.entity'
 import {
   Field,
   FieldError,
@@ -10,7 +9,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Project } from '@/core/repositories/project.repo'
+import z from 'zod'
 
 import {
   Select,
@@ -21,18 +20,48 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useProjectQueries } from '@/hooks/queries/project-query'
+import ProjectImageInput, {
+  GalleryInputValue,
+} from '@/components/app/project/project-image-input'
 
-const formSchema = ProjectEntity.pick({
-  title: true,
-  category: true,
-  tags: true,
-  galleries: true,
+const formSchema = z.object({
+  title: z.string().min(1, 'Project title is required'),
+  category: z.string().uuid('Category is required'),
+  location: z.string(),
+  type: z.string(),
+  program: z.string(),
+  client: z.string(),
+  siteArea: z.string(),
+  builtArea: z.string(),
+  design: z.string(),
+  completion: z.string(),
+  description: z.string(),
+  tags: z.array(z.string()),
+  galleries: z.array(z.union([z.string(), z.instanceof(File)])),
+  displayOrder: z.number().positive('Display order must be greater than 0'),
 })
 
-type ProjectFormValue = Pick<
-  Project,
-  'title' | 'category' | 'tags' | 'galleries'
->
+const normalizeOptional = (value?: string) => {
+  const trimmed = value?.trim()
+  return trimmed ? trimmed : undefined
+}
+
+export type ProjectFormValue = {
+  title: string
+  category: string
+  location?: string
+  type?: string
+  program?: string
+  client?: string
+  siteArea?: string
+  builtArea?: string
+  design?: string
+  completion?: string
+  description?: string
+  tags: string[]
+  galleries: GalleryInputValue[]
+  displayOrder: number
+}
 
 export default function ProjectForm({
   value,
@@ -42,7 +71,22 @@ export default function ProjectForm({
   const { categories } = useProjectQueries()
   const form = useForm({
     onSubmit: ({ value }) => {
-      onSubmit(value)
+      onSubmit({
+        title: value.title,
+        category: value.category,
+        location: normalizeOptional(value.location),
+        type: normalizeOptional(value.type),
+        program: normalizeOptional(value.program),
+        client: normalizeOptional(value.client),
+        siteArea: normalizeOptional(value.siteArea),
+        builtArea: normalizeOptional(value.builtArea),
+        design: normalizeOptional(value.design),
+        completion: normalizeOptional(value.completion),
+        description: normalizeOptional(value.description),
+        tags: value.tags,
+        galleries: value.galleries,
+        displayOrder: value.displayOrder,
+      })
     },
     validators: {
       onSubmit: formSchema,
@@ -50,8 +94,18 @@ export default function ProjectForm({
     defaultValues: {
       title: value?.title || '',
       category: value?.category || '',
+      location: value?.location || '',
+      type: value?.type || '',
+      program: value?.program || '',
+      client: value?.client || '',
+      siteArea: value?.siteArea || '',
+      builtArea: value?.builtArea || '',
+      design: value?.design || '',
+      completion: value?.completion || '',
+      description: value?.description || '',
       tags: value?.tags || [],
       galleries: value?.galleries || [],
+      displayOrder: value?.displayOrder || 1,
     },
   })
 
@@ -115,6 +169,224 @@ export default function ProjectForm({
               </Field>
             )
           }}
+        </form.Field>
+
+        <form.Field name="location">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Location</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter location"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="type">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter type"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="program">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Program</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter program"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="client">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Client</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter client"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="siteArea">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Site Area</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter site area"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="builtArea">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Built Area</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter built area"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="design">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Design</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter design"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="completion">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Completion</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter completion"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="description">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Enter description"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="displayOrder">
+          {(field) => {
+            const isInvalid =
+              !field.state.meta.isValid && field.state.meta.isTouched
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Display Order</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="number"
+                  min={1}
+                  value={String(field.state.value)}
+                  onBlur={field.handleBlur}
+                  onChange={(e) =>
+                    field.handleChange(Number(e.target.value || 1))
+                  }
+                  aria-invalid={isInvalid}
+                  placeholder="1"
+                  autoComplete="off"
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            )
+          }}
+        </form.Field>
+
+        <form.Field name="tags">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>
+                Tags (comma separated)
+              </FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value.join(', ')}
+                onBlur={field.handleBlur}
+                onChange={(e) => {
+                  const parsed = e.target.value
+                    .split(',')
+                    .map((item) => item.trim())
+                    .filter(Boolean)
+                  field.handleChange(parsed)
+                }}
+                placeholder="modern, architecture, gallery"
+                autoComplete="off"
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="galleries">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Galleries</FieldLabel>
+              <ProjectImageInput
+                value={field.state.value}
+                onChange={field.handleChange}
+                disabled={isLoading}
+              />
+            </Field>
+          )}
         </form.Field>
       </FieldGroup>
 

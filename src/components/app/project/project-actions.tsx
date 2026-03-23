@@ -1,6 +1,6 @@
 'use client'
 import ModalDialog from '@/components/share/overlay/modal-dialog'
-import ProjectForm from './project-form'
+import ProjectForm, { ProjectFormValue } from './project-form'
 import { Button } from '@/components/ui/button'
 import { useProjectQueries } from '@/hooks/queries/project-query'
 import { useCallback } from 'react'
@@ -10,41 +10,14 @@ import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Pen01Icon, Trash2 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ConfirmDialog } from '@/components/share/overlay/confirm-dialog'
+import Link from 'next/link'
+import { toast } from 'sonner'
 
 export const ProjectCreateAction = () => {
-  const { createdProject } = useProjectQueries()
-  const { closeAll } = useOverlay()
-
-  const onSubmit = useCallback(
-    async (data: {
-      title: string
-      category: string
-      tags: string[]
-      galleries: string[]
-    }) => {
-      await createdProject.mutateAsync({
-        body: {
-          title: data.title,
-          slug: data.title,
-          category: data.category,
-          displayOrder: 0,
-          tags: data.tags,
-          galleries: data.galleries,
-        },
-      })
-      closeAll()
-    },
-    [createdProject, closeAll],
-  )
-
   return (
-    <ModalDialog
-      title="Create New Project"
-      description="Fill in the details to create a new project."
-      trigger={<Button className="btn">Create Project</Button>}
-    >
-      <ProjectForm onSubmit={onSubmit} isLoading={createdProject.isPending} />
-    </ModalDialog>
+    <Button asChild className="btn">
+      <Link href="/admin/project/new">Create Project</Link>
+    </Button>
   )
 }
 
@@ -57,12 +30,20 @@ export const ProjectEditAction = ({
   const { closeAll } = useOverlay()
 
   const onSubmit = useCallback(
-    async (data: {
-      title: string
-      category: string
-      tags: string[]
-      galleries: string[]
-    }) => {
+    async (data: ProjectFormValue) => {
+      const files = data.galleries.filter(
+        (item): item is File => item instanceof File,
+      )
+
+      if (files.length > 0) {
+        toast.error('Please upload images first and submit using URL values.')
+        return
+      }
+
+      const galleryUrls = data.galleries.filter(
+        (item): item is string => typeof item === 'string',
+      )
+
       await updatedProject.mutateAsync({
         params: {
           path: {
@@ -73,9 +54,18 @@ export const ProjectEditAction = ({
           title: data.title,
           slug: data.title,
           category: data.category,
+          location: data.location,
+          type: data.type,
+          program: data.program,
+          client: data.client,
+          siteArea: data.siteArea,
+          builtArea: data.builtArea,
+          design: data.design,
+          completion: data.completion,
+          description: data.description,
           displayOrder: data.displayOrder,
           tags: data.tags,
-          galleries: data.galleries,
+          galleries: galleryUrls,
         },
       })
       closeAll()
@@ -98,7 +88,16 @@ export const ProjectEditAction = ({
         value={{
           title: project.title,
           category: project.category?.id || '',
-
+          location: project.location,
+          type: project.type,
+          program: project.program,
+          client: project.client,
+          siteArea: project.siteArea,
+          builtArea: project.builtArea,
+          design: project.design,
+          completion: project.completion,
+          description: project.description,
+          displayOrder: project.displayOrder,
           tags: project.tags,
           galleries: project.galleries,
         }}
