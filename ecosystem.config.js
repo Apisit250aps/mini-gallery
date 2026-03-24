@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'next-standalone-app',
+      name: 'gallery',
       script: './.next/standalone/server.js',
       // instances: "max",
       exec_mode: 'cluster', // ใช้ Cluster Mode เพื่อกระจายโหลด
