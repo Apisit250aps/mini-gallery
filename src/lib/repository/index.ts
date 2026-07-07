@@ -11,6 +11,7 @@ import {
   IndexDescription,
   IndexDirection,
   ObjectId,
+  WithId,
 } from 'mongodb'
 
 import { omit } from 'lodash'
@@ -68,7 +69,6 @@ export async function collection<T extends Document>(
 
 export default abstract class Repository<
   T extends Document & {
-    id: ObjectId
     createdAt: Date
     updatedAt: Date
   },
@@ -83,7 +83,7 @@ export default abstract class Repository<
     this.collection = collection<T>(client, collectionName, indexes)
   }
 
-  protected abstract toEntity(data: T): T
+  protected abstract toEntity(data: WithId<T>): T
   protected toObjectId(id: string | ObjectId): ObjectId {
     return typeof id === 'string' ? new ObjectId(id) : id
   }
@@ -101,7 +101,7 @@ export default abstract class Repository<
         options,
       )
       .toArray()
-    return results.map((item) => this.toEntity(item as unknown as T))
+    return results.map((item) => this.toEntity(item as WithId<T>))
   }
 
   async findById(id: string): Promise<T | null> {
@@ -109,7 +109,7 @@ export default abstract class Repository<
     const result = await col.findOne({
       _id: this.toObjectId(id),
     } as Filter<T>)
-    return result ? this.toEntity(result as unknown as T) : null
+    return result ? this.toEntity(result as WithId<T>) : null
   }
 
   async create(entity: T, options?: InsertOneOptions): Promise<T> {
@@ -121,7 +121,7 @@ export default abstract class Repository<
     if (!result.acknowledged) {
       throw new Error('Failed to create entity')
     }
-    return this.toEntity(entity)
+    return this.toEntity({ ...entity, _id: result.insertedId } as WithId<T>)
   }
 
   async update(
@@ -138,7 +138,7 @@ export default abstract class Repository<
     if (!result) {
       throw new Error('Failed to update entity')
     }
-    return this.toEntity(result as unknown as T)
+    return this.toEntity(result as WithId<T>)
   }
 
   async delete(id: string): Promise<void> {

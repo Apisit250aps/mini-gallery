@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { v7 as uuidv7 } from 'uuid'
+import { ObjectId } from 'mongodb'
 
 type BaseFieldOptions<T> = {
   required?: boolean
@@ -140,9 +141,21 @@ const BooleanField = <
   return createField(z.boolean(), options)
 }
 
+const ObjectIdField = <
+  TRequired extends boolean = true,
+  TNullable extends boolean = false,
+>(
+  options: BaseFieldOptions<string> & {
+    required?: TRequired
+    nullable?: TNullable
+  } = {},
+) => {
+  return createField(z.string().regex(/^[a-f\d]{24}$/i), options)
+}
+
 const BaseEntity = <T extends z.ZodRawShape>(schema: T) => {
   return z.object({
-    id: StringField({ required: true }),
+    id: ObjectIdField({ required: true }),
     ...schema,
     createdAt: TimestampField(),
     updatedAt: TimestampField(),
