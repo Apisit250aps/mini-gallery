@@ -1,7 +1,7 @@
 import Repository from '@/lib/repository'
+import { MongoClient, WithId } from 'mongodb'
 import { User } from '@/domains/entities/user'
 import { IUserRepository } from '@/domains/repositories/user.repo'
-import { MongoClient, WithId } from 'mongodb'
 
 class UserRepository extends Repository<User> implements IUserRepository {
   constructor(client: MongoClient) {

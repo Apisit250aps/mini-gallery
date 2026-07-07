@@ -6,6 +6,18 @@ namespace Domain.Entity;
     updatedAt: utcDateTime;
   }
 
+  model Project {
+    ...BaseEntity;
+
+    name: string;
+    slug: string;
+    tags: string[];
+    creator: string;
+    description: string | null;
+    isActive: boolean;
+    images: string[];
+  }
+
   model User {
     ...BaseEntity;
 

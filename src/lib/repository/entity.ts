@@ -171,5 +171,6 @@ export {
   DateField,
   BooleanField,
   TimestampField,
+  ObjectIdField,
   uuidv7 as uuid,
 }
