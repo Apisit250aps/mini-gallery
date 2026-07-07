@@ -8,14 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Field, FieldDescription, FieldGroup } from '@/components/ui/field'
-
+import { Field, FieldGroup } from '@/components/ui/field'
+import { toast } from 'sonner'
 import { InputField, PasswordField } from '@/components/shared/form/input'
 import z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { authClient } from '@/lib/auth-client'
+import { redirect } from 'next/navigation'
 
 const loginSchema = z.object({
   email: z.email({ message: 'Invalid email address' }),
@@ -39,11 +40,15 @@ export function LoginForm({
   })
 
   const onSubmit = useCallback(async (values: LoginFormValues) => {
-    const { data, error } = await authClient.signIn.email({
+    const { error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
       rememberMe: true,
     })
+    if (error) {
+      toast.error('เกิดข้อผิดพลาดในการเข้าสู่ระบบ')
+    }
+    redirect('/dashboard')
   }, [])
 
   return (
