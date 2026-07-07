@@ -1,7 +1,6 @@
+import Repository from '@/lib/repository'
 import { User } from '@/domains/entities/user'
 import { IUserRepository } from '@/domains/repositories/user.repo'
-// import client from '@/lib/client'
-import Repository from '@/lib/repository'
 import { MongoClient, WithId } from 'mongodb'
 
 class UserRepository extends Repository<User> implements IUserRepository {
@@ -27,12 +26,4 @@ class UserRepository extends Repository<User> implements IUserRepository {
   }
 }
 
-const main = async () => {
-  const client = new MongoClient('mongodb://localhost:27017/mini-gallery')
-  const userRepo = new UserRepository(client)
-
-  const user = await userRepo.findAll()
-  console.log(user)
-}
-
-main().catch(console.error)
+export default UserRepository
