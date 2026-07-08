@@ -20,15 +20,8 @@ class ProjectRepository
 
   toEntity(data: WithId<Project & { creator: ObjectId }>): Project {
     return new Project({
+      ...data,
       id: data._id.toString(),
-      description: data.description,
-      isActive: data.isActive,
-      images: data.images,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-      name: data.name,
-      slug: data.slug,
-      tags: data.tags,
       creator: data.creator.toString(),
     })
   }
