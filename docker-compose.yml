@@ -21,6 +21,7 @@ services:
     volumes:
       - mongo-data:/data/db
       - ./backup:/backup
+      - ./scripts/mongo-init.sh:/docker-entrypoint-initdb.d/01-mongo-init.sh:ro
     env_file:
       - .env
     expose:
