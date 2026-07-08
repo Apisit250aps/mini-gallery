@@ -1,43 +1,37 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { PhotoView } from "react-photo-view";
-import Flicking from "@egjs/react-flicking";
+import { useState, useEffect, useRef } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import Image from 'next/image'
+import { PhotoView } from 'react-photo-view'
+import Flicking from '@egjs/react-flicking'
 
 // Import styles
-import "@egjs/react-flicking/dist/flicking.css";
-import "react-photo-view/dist/react-photo-view.css";
+import '@egjs/react-flicking/dist/flicking.css'
+import 'react-photo-view/dist/react-photo-view.css'
 
 interface ProjectMediaViewerProps {
-  images: string[];
-  title: string;
+  images: string[]
+  title: string
 }
 
 export function ProjectMediaViewer({ images, title }: ProjectMediaViewerProps) {
-  const [mounted, setMounted] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const flickingRef = useRef<Flicking | null>(null);
+  const [mounted, setMounted] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const flickingRef = useRef<Flicking | null>(null)
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   const handleNext = () => {
-    flickingRef.current?.next().catch((err) => console.log(err));
-  };
+    flickingRef.current?.next().catch((err) => console.log(err))
+  }
 
   const handlePrev = () => {
-    flickingRef.current?.prev().catch((err) => console.log(err));
-  };
-
-  const handleThumbnailClick = (idx: number) => {
-    setCurrentIndex(idx);
-    flickingRef.current?.moveTo(idx).catch((err) => console.log(err));
-  };
+    flickingRef.current?.prev().catch((err) => console.log(err))
+  }
 
   if (!mounted) {
     // Return a beautiful loading/static placeholder skeleton for SSR
@@ -58,12 +52,13 @@ export function ProjectMediaViewer({ images, title }: ProjectMediaViewerProps) {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-  const coverImage = images.length > 0
-    ? images[0]
-    : "https://deifkwefumgah.cloudfront.net/photos/tiny-home/erik-mclean-g3U7sqtdJ1w-unsplash.jpg";
+  const coverImage =
+    images.length > 0
+      ? images[0]
+      : 'https://deifkwefumgah.cloudfront.net/photos/tiny-home/erik-mclean-g3U7sqtdJ1w-unsplash.jpg'
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -80,7 +75,7 @@ export function ProjectMediaViewer({ images, title }: ProjectMediaViewerProps) {
             {images.map((img, idx) => (
               <div
                 key={idx}
-                className="w-full h-full relative aspect-video flex-shrink-0 cursor-zoom-in flex items-center justify-center"
+                className="w-full h-full relative aspect-video shrink-0 cursor-zoom-in flex items-center justify-center"
               >
                 <PhotoView src={img}>
                   <div className="relative w-full h-full">
@@ -115,20 +110,20 @@ export function ProjectMediaViewer({ images, title }: ProjectMediaViewerProps) {
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation();
-                handlePrev();
+                e.stopPropagation()
+                handlePrev()
               }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/85 text-white rounded-full p-2.5 opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2  text-white rounded-full p-2.5 opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation();
-                handleNext();
+                e.stopPropagation()
+                handleNext()
               }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/85 text-white rounded-full p-2.5 opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white rounded-full p-2.5 opacity-0 group-hover/carousel:opacity-100 transition-opacity z-10"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -139,34 +134,8 @@ export function ProjectMediaViewer({ images, title }: ProjectMediaViewerProps) {
           </>
         )}
       </div>
-
-      {/* Thumbnails row */}
-      {/* {images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto py-2">
-          {images.map((img, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleThumbnailClick(idx)}
-              className={cn(
-                "h-16 w-24 overflow-hidden bg-muted relative shrink-0 transition-all",
-                currentIndex === idx
-                  ? "scale-102 opacity-100 shadow-sm"
-                  : "opacity-60 hover:opacity-100"
-              )}
-            >
-              <Image
-                src={img}
-                className="object-cover"
-                alt=""
-                fill
-                sizes="96px"
-              />
-            </button>
-          ))}
-        </div>
-      )} */}
     </div>
-  );
+  )
 }
-export default ProjectMediaViewer;
+
+export default ProjectMediaViewer
