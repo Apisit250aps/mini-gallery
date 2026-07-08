@@ -44,14 +44,23 @@ interface ProjectFormProps {
   submitLabel?: string
 }
 
-// Utility to convert File to Base64 data URL
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = (error) => reject(error)
+// Utility to upload File to /api/upload and return GCS URL
+const uploadFile = async (file: File, slug: string): Promise<string> => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const res = await fetch(`/api/upload?slug=${encodeURIComponent(slug)}`, {
+    method: 'POST',
+    body: formData,
   })
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}))
+    throw new Error(errorData.message || `Upload failed with status ${res.status}`)
+  }
+
+  const result = await res.json()
+  return result.data.url
 }
 
 // Helper defined outside of the component to keep try/catch out of the React component context, complying with React Compiler guidelines.
@@ -62,12 +71,13 @@ const submitProjectForm = async (
 ) => {
   setLoading(true)
   try {
-    // Convert all selected local Files to Base64 strings (data URLs)
+    // Upload all selected local Files to GCS before submitting the form, organized by slug folder
+    const slug = values.slug || 'default'
     const imagesArray = values.images ?? []
     const convertedImages = await Promise.all(
       imagesArray.map(async (img) => {
         if (typeof img === 'string') return img
-        return await fileToBase64(img)
+        return await uploadFile(img, slug)
       }),
     )
 
@@ -77,7 +87,7 @@ const submitProjectForm = async (
       images: convertedImages,
     })
   } catch (err) {
-    console.error('Error converting images:', err)
+    console.error('Error uploading images:', err)
   } finally {
     setLoading(false)
   }
@@ -146,6 +156,7 @@ export function ProjectForm({
         label="Slug"
         placeholder="my-awesome-project"
         description="URL-friendly identifier (ตัวพิมพ์เล็ก, ขีดกลาง)"
+        disabled={!!defaultValues}
       />
 
       <TextareaField

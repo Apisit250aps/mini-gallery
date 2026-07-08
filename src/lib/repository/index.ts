@@ -39,14 +39,7 @@ export async function collection<T extends Document>(
   const db = client.db()
   const collection = db.collection<T>(collectionName)
 
-  const allIndexes: AppIndexDescription<T>[] = [
-    {
-      key: { id: 1 } as never,
-      unique: true,
-      name: 'uniq_id',
-    },
-    ...indexes,
-  ]
+  const allIndexes: AppIndexDescription<T>[] = [...indexes]
 
   const partialIndexes = allIndexes.map((index) => {
     if (index.unique) {
@@ -113,15 +106,27 @@ export default abstract class Repository<
   }
 
   async create(entity: T, options?: InsertOneOptions): Promise<T> {
-    const col = await this.collection
-    const result = await col.insertOne(
-      entity as OptionalUnlessRequiredId<T>,
-      options,
-    )
-    if (!result.acknowledged) {
-      throw new Error('Failed to create entity')
+    try {
+      const col = await this.collection
+      const now = new Date()
+      const entityWithTimestamps = {
+        ...entity,
+        createdAt: entity.createdAt || now,
+        updatedAt: entity.updatedAt || now,
+      }
+      console.log('Creating entity:', entityWithTimestamps)
+      const result = await col.insertOne(
+        entityWithTimestamps as OptionalUnlessRequiredId<T>,
+        options,
+      )
+      if (!result.acknowledged) {
+        throw new Error('Failed to create entity')
+      }
+      return this.toEntity({ ...entityWithTimestamps, _id: result.insertedId } as unknown as WithId<T>)
+    } catch (error) {
+      console.error('Error creating entity:', error)
+      throw error
     }
-    return this.toEntity({ ...entity, _id: result.insertedId } as WithId<T>)
   }
 
   async update(
@@ -130,9 +135,14 @@ export default abstract class Repository<
     options?: { session?: ClientSession },
   ): Promise<T> {
     const col = await this.collection
+    const now = new Date()
+    const entityWithTimestamps = {
+      ...entity,
+      updatedAt: now,
+    }
     const result = await col.findOneAndUpdate(
       { _id: this.toObjectId(id) } as Filter<T>,
-      { $set: omit(entity, ['id', 'createdAt', 'deletedAt']) as T },
+      { $set: omit(entityWithTimestamps, ['id', 'createdAt', 'deletedAt']) as T },
       { returnDocument: 'after', ...options },
     )
     if (!result) {

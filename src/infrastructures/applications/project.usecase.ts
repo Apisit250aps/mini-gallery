@@ -23,6 +23,7 @@ class CreateProjectUseCase implements ICreateProjectUseCase {
   async execute(input: CreateContext): Promise<Project> {
     try {
       const parsed = await createProjectSchema.safeParseAsync(input.data)
+      console.log('Parsed data:', parsed)
       if (!parsed.success) {
         throw new ValidationError(parsed.error.message)
       }

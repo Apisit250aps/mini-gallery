@@ -28,7 +28,7 @@ export const createProjectSchema = projectSchema.omit({
   updatedAt: true,
 })
 
-export const updateProjectSchema = createProjectSchema.partial()
+export const updateProjectSchema = createProjectSchema.omit({ slug: true }).partial()
 
 export type ProjectEntity = z.infer<typeof projectSchema>
 export type CreateProjectInput = z.infer<typeof createProjectSchema>

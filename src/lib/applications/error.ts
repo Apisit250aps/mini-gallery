@@ -71,6 +71,15 @@ const throwAppError = (error: unknown): never => {
     throw error;
   }
   if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
+    const err = error as { keyPattern?: Record<string, unknown> };
+    if (err.keyPattern) {
+      if ('slug' in err.keyPattern) {
+        throw new ValidationError('Project with this slug already exists');
+      }
+      if ('email' in err.keyPattern) {
+        throw new ValidationError('User with this email already exists');
+      }
+    }
     throw new ValidationError('Duplicate key violation: value already exists');
   }
   throw new InternalError(

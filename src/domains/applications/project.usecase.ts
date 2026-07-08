@@ -1,6 +1,6 @@
 
 import { Project } from '../entities/project';
-import { CreateProjectInput } from '../schemas/project'
+import { CreateProjectInput, UpdateProjectInput } from '../schemas/project'
 import { BaseUseCase } from '@/lib/applications'
 type CreateContext = {
   data: CreateProjectInput
@@ -8,7 +8,7 @@ type CreateContext = {
 
 type UpdateContext = {
   projectId: string
-  data: Partial<CreateProjectInput>
+  data: UpdateProjectInput
 }
 
 type UniqueContext = {

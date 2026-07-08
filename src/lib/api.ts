@@ -3,6 +3,7 @@ import { auth } from './auth'
 import { handle } from 'hono/vercel'
 import { onApiError } from './applications/response'
 import projectRouter from '@/infrastructures/http/routes/project.routes'
+import uploadRouter from '@/infrastructures/http/routes/upload.routes'
 
 const app = new Hono().basePath('/api')
 
@@ -16,5 +17,6 @@ app.on(['POST', 'GET'], '/auth/*', (c) => {
 
 // ─── Feature routes ───────────────────────────────────────────────────────────
 app.route('/projects', projectRouter)
+app.route('/upload', uploadRouter)
 
 export default handle(app)
