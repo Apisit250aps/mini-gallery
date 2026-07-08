@@ -7,6 +7,8 @@ services:
         MONGODB_URI: ${MONGODB_URI}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
         BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+    volumes:
+      - ./credentials.json:/app/credentials.json:ro
     ports:
       - '3000:3000'
     env_file:
