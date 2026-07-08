@@ -43,7 +43,7 @@ export default function ProjectImage({
             </div>
           )}
         </div>
-        <div className="flex flex-col justify-between flex-grow px-5 py-4">
+        <div className="flex flex-col justify-between grow px-5 py-4">
           <div>
             <h2 className="text-lg font-bold tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
               {project.name}

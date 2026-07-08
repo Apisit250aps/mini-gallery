@@ -119,7 +119,7 @@ export const TagsInputField = <T extends FieldValues>({
                 onBlur={handleBlur}
                 placeholder={tags.length === 0 ? placeholder : ''}
                 disabled={disabled}
-                className="flex-1 bg-transparent outline-hidden placeholder:text-muted-foreground min-w-[80px]"
+                className="flex-1 bg-transparent outline-hidden placeholder:text-muted-foreground min-w-20"
                 aria-invalid={fieldState.invalid}
               />
             </div>

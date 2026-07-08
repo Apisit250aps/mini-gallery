@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, useInView } from 'framer-motion'
-import { MoveUpRight, ArrowLeft } from 'lucide-react'
+import { MoveUpRight } from 'lucide-react'
 import { useRef } from 'react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
