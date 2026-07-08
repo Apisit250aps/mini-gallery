@@ -11,7 +11,7 @@ import {
   UpdateProjectUseCase,
 } from './applications/project.usecase'
 
-const projectRepository = new ProjectRepository(client)
+export const projectRepository = new ProjectRepository(client)
 export const uploadService = new GCSService()
 
 export const getProjectUseCase = new GetProjectUseCase(projectRepository)
