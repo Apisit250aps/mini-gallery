@@ -1,5 +1,5 @@
 import { listProjectsUseCase } from '@/infrastructures'
-import Projects5, { ProjectItem } from '@/components/projects5'
+import ProjectGallery, { ProjectItem } from '@/components/app/projects/project-gallery'
 
 export default async function Home() {
   let projectsData: ProjectItem[] = []
@@ -9,19 +9,20 @@ export default async function Home() {
       .filter((p) => p.isActive)
       .map((p) => ({
         id: p.id,
-        title: p.name,
+        name: p.name,
         slug: p.slug,
-        img: p.images && p.images.length > 0 ? p.images[0] : 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/lummi/Modern Architectural Elegance at Twilight.png',
-        year: p.createdAt ? new Date(p.createdAt).getFullYear().toString() : '2025',
-        type: p.tags && p.tags.length > 0 ? p.tags[0] : 'Architecture',
+        tags: p.tags,
+        creator: p.creator,
         description: p.description,
-        images: p.images && p.images.length > 0 ? p.images : ['https://deifkwefumgah.cloudfront.net/shadcnblocks/block/lummi/Modern Architectural Elegance at Twilight.png'],
+        images: p.images,
+        createdAt: p.createdAt ? p.createdAt.toISOString() : new Date().toISOString(),
+        updatedAt: p.updatedAt ? p.updatedAt.toISOString() : null,
       }))
   } catch (error) {
     console.error('Error loading projects for SSR:', error)
   }
 
   return (
-    <Projects5 projects={projectsData} />
+    <ProjectGallery projects={projectsData} />
   )
 }

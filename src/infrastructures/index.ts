@@ -1,6 +1,7 @@
 import client from '@/lib/client'
 
 import ProjectRepository from './repositories/project.repo'
+import UserRepository from './repositories/user.repo'
 import { GCSService } from './services/gcs.service'
 
 import {
@@ -12,6 +13,7 @@ import {
 } from './applications/project.usecase'
 
 export const projectRepository = new ProjectRepository(client)
+export const userRepository = new UserRepository(client)
 export const uploadService = new GCSService()
 
 export const getProjectUseCase = new GetProjectUseCase(projectRepository)
