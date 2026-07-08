@@ -2,6 +2,8 @@ import { projectRepository, userRepository } from '@/infrastructures'
 import { notFound } from 'next/navigation'
 import { ProjectDetail } from '@/components/app/projects/project-detail'
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
   params: Promise<{
     slug: string
