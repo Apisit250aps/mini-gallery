@@ -32,6 +32,15 @@ class ProjectRepository
       creator: data.creator.toString(),
     })
   }
+
+  async findOneBySlug(slug: string): Promise<Project | null> {
+    const col = await this.collection
+    const data = await col.findOne({ slug })
+    if (!data) {
+      return null
+    }
+    return data
+  }
 }
 
 export default ProjectRepository

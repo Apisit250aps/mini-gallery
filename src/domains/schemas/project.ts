@@ -22,4 +22,14 @@ export const projectSchema = BaseEntity({
     .default([]),
 })
 
+export const createProjectSchema = projectSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
+export const updateProjectSchema = createProjectSchema.partial()
+
 export type ProjectEntity = z.infer<typeof projectSchema>
+export type CreateProjectInput = z.infer<typeof createProjectSchema>
+export type UpdateProjectInput = z.infer<typeof updateProjectSchema>

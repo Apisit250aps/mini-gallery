@@ -1,10 +1,13 @@
 import type { BaseRepository } from '@/lib/repository'
 import type { Project } from '../entities/project'
+import type { CreateProjectInput, UpdateProjectInput } from '../schemas/project'
 
-type IProjectRepository = BaseRepository<
+interface IProjectRepository extends BaseRepository<
   Project,
-  Omit<Project, 'id' | 'createdAt' | 'updatedAt'>,
-  Partial<Omit<Project, 'id' | 'createdAt' | 'updatedAt'>>
->
+  CreateProjectInput,
+  UpdateProjectInput
+> {
+  findOneBySlug(slug: string): Promise<Project | null>
+}
 
 export type { IProjectRepository }
