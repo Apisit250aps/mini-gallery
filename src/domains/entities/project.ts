@@ -7,6 +7,7 @@ class Project implements ProjectEntity {
   tags: string[]
   creator: string
   description: string | null
+  details: string
   isActive: boolean
   images: string[]
   createdAt: Date
@@ -19,6 +20,7 @@ class Project implements ProjectEntity {
     this.tags = data.tags ?? []
     this.creator = data.creator
     this.description = data.description
+    this.details = data.details
     this.isActive = data.isActive
     this.images = data.images ?? []
     this.createdAt = data.createdAt

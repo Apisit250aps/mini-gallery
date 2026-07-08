@@ -56,7 +56,9 @@ const uploadFile = async (file: File, slug: string): Promise<string> => {
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}))
-    throw new Error(errorData.message || `Upload failed with status ${res.status}`)
+    throw new Error(
+      errorData.message || `Upload failed with status ${res.status}`,
+    )
   }
 
   const result = await res.json()
@@ -108,6 +110,7 @@ export function ProjectForm({
       slug: defaultValues?.slug ?? '',
       tags: defaultValues?.tags ?? [],
       description: defaultValues?.description ?? null,
+      details: defaultValues?.details ?? '',
       isActive: defaultValues?.isActive ?? true,
       images: defaultValues?.images ?? [],
     },
@@ -158,13 +161,19 @@ export function ProjectForm({
         description="URL-friendly identifier (ตัวพิมพ์เล็ก, ขีดกลาง)"
         disabled={!!defaultValues}
       />
-
-      <TextareaField
+      <InputField
         control={form.control}
         name="description"
         label="คำอธิบาย"
         placeholder="รายละเอียดของ project..."
-        rows={3}
+      />
+
+      <TextareaField
+        control={form.control}
+        name="details"
+        label="รายละเอียด"
+        placeholder="รายละเอียดของ project..."
+        description="รายละเอียดเพิ่มเติมเกี่ยวกับ project"
       />
 
       <TagsInputField

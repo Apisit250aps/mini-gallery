@@ -12,14 +12,17 @@ export const projectSchema = BaseEntity({
   tags: z
     .array(StringField({ required: true }))
     .optional()
-    .default([]).unwrap(),
+    .default([])
+    .unwrap(),
   creator: ObjectIdField({ required: true }),
+  details: StringField({ required: true }),
   description: StringField({ nullable: true }),
   isActive: BooleanField({ required: true }),
   images: z
     .array(StringField({ required: true }))
     .optional()
-    .default([]).unwrap(),
+    .default([])
+    .unwrap(),
 })
 
 export const createProjectSchema = projectSchema.omit({
@@ -28,7 +31,9 @@ export const createProjectSchema = projectSchema.omit({
   updatedAt: true,
 })
 
-export const updateProjectSchema = createProjectSchema.omit({ slug: true }).partial()
+export const updateProjectSchema = createProjectSchema
+  .omit({ slug: true })
+  .partial()
 
 export type ProjectEntity = z.infer<typeof projectSchema>
 export type CreateProjectInput = z.infer<typeof createProjectSchema>

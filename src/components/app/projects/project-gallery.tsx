@@ -1,12 +1,13 @@
 import { Project } from '@/domains/entities/project'
 import ProjectImage from './project-image'
+import { shuffle } from 'lodash';
 
 interface ProjectGalleryProps {
   projects?: Project[]
 }
 
 function ProjectGallery({ projects = [] }: ProjectGalleryProps) {
-  const displayProjects = projects.map((project) => ({ ...project }))
+  const displayProjects = shuffle(projects)
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
       {/* Hero Header Section */}
@@ -28,7 +29,7 @@ function ProjectGallery({ projects = [] }: ProjectGalleryProps) {
       {/* Projects Grid Section */}
       <section className="py-12 pb-24">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {displayProjects.map((project, index) => {
               return (
                 <ProjectImage

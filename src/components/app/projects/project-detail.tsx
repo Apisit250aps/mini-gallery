@@ -100,10 +100,21 @@ const ProjectDetail = ({ className, project }: ProjectDetailProps) => {
             <ProjectMediaViewer images={project.images} title={project.name} />
           </FadeUpOnScroll>
 
+          <div className="">
+            {project.details && (
+              <FadeUpOnScroll delay={0.2}>
+                <div className="prose prose-invert max-w-none">
+                  <h3 className="text-lg font-semibold mb-2">รายละเอียด</h3>
+                  <p>{project.details}</p>
+                </div>
+              </FadeUpOnScroll>
+            )}
+          </div>
+
           {/* Bottom Grid displaying all images with PhotoView expand triggers */}
           {gridImages.length > 0 && (
             <FadeUpOnScroll delay={0.3}>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-6 pt-8 border-t border-border/40">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:gap-4 pt-8 border-t border-border/40">
                 {gridImages.map((src, i) => (
                   <div
                     key={i}
