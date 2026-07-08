@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { v7 as uuidv7 } from 'uuid'
-import { ObjectId } from 'mongodb'
 
 type BaseFieldOptions<T> = {
   required?: boolean

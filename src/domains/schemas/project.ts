@@ -3,7 +3,7 @@ import {
   BooleanField,
   StringField,
   ObjectIdField,
-} from '@/lib/repository'
+} from '@/lib/repository/entity'
 import z from 'zod'
 
 export const projectSchema = BaseEntity({
@@ -12,14 +12,14 @@ export const projectSchema = BaseEntity({
   tags: z
     .array(StringField({ required: true }))
     .optional()
-    .default([]),
+    .default([]).unwrap(),
   creator: ObjectIdField({ required: true }),
   description: StringField({ nullable: true }),
   isActive: BooleanField({ required: true }),
   images: z
     .array(StringField({ required: true }))
     .optional()
-    .default([]),
+    .default([]).unwrap(),
 })
 
 export const createProjectSchema = projectSchema.omit({

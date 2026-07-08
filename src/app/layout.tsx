@@ -4,6 +4,8 @@ import './globals.css'
 import { cn } from '@/lib/utils'
 import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { ReactQueryProvider } from '@/lib/query-provider'
+import { OverlayProvider } from '@/hooks/overlay-provider'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -40,7 +42,11 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>{children}</TooltipProvider>
+        <ReactQueryProvider>
+          <OverlayProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+          </OverlayProvider>
+        </ReactQueryProvider>
         <Toaster position="top-right" />
       </body>
     </html>

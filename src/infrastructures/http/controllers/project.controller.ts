@@ -46,9 +46,16 @@ class ProjectController extends Controller {
    * Creates a new project.
    */
   create() {
-    return this.validator({ body: createProjectSchema }, async (c) => {
-      const data = c.var.body
-      const project = await createProjectUseCase.execute({ data })
+    const bodySchema = createProjectSchema.omit({ creator: true })
+    return this.validator({ body: bodySchema }, async (c) => {
+      const body = c.var.body
+      const user = c.get('user') as { id: string }
+      const project = await createProjectUseCase.execute({
+        data: {
+          ...body,
+          creator: user.id,
+        },
+      })
       return this.created(c, 'Project created successfully', project)
     })
   }

@@ -3,7 +3,7 @@ import {
   BooleanField,
   EmailField,
   StringField,
-} from '@/lib/repository'
+} from '@/lib/repository/entity'
 import z from 'zod'
 
 export const userSchema = BaseEntity({

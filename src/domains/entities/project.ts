@@ -16,11 +16,11 @@ class Project implements ProjectEntity {
     this.id = data.id
     this.name = data.name
     this.slug = data.slug
-    this.tags = data.tags
+    this.tags = data.tags ?? []
     this.creator = data.creator
     this.description = data.description
     this.isActive = data.isActive
-    this.images = data.images
+    this.images = data.images ?? []
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
   }

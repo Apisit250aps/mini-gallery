@@ -11,3 +11,5 @@ export * from './input-otp';
 export * from './date-picker';
 export * from './combobox';
 export * from './toggle-group';
+export * from './tags-input';
+export * from './image-upload';
