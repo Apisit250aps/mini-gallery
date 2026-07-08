@@ -1,6 +1,7 @@
 import { Project } from '@/domains/entities/project'
 import ProjectImage from './project-image'
-import { shuffle } from 'lodash';
+import { shuffle } from 'lodash'
+import Link from 'next/link'
 
 interface ProjectGalleryProps {
   projects?: Project[]
@@ -12,16 +13,25 @@ function ProjectGallery({ projects = [] }: ProjectGalleryProps) {
     <div className="min-h-screen bg-background text-foreground font-sans">
       {/* Hero Header Section */}
       <header className="container mx-auto px-6 pt-24 pb-8">
-        <div className="max-w-2xl">
-          <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase mb-2">
-            Creative Portfolio
-          </p>
+        <div className="">
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <p className="text-xs font-bold tracking-widest text-muted-foreground uppercase mb-2">
+              Creative Portfolio
+            </p>
+            <Link href="/about">
+              <p className="text-xs font-bold tracking-widest text-foreground uppercase mb-2 underline hover:text-primary transition-colors duration-300">
+                About
+              </p>
+            </Link>
+          </div>
+
           <h1 className="text-5xl font-extrabold tracking-tight uppercase mb-4 bg-linear-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent sm:text-6xl">
             Mini Gallery
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            A beautiful curated space showcasing modern concrete pavilions,
-            glasshouses in nature, and minimalist spatial designs.
+            A collection of my personal projects, showcasing my skills and
+            creativity. Each project is a testament to my dedication to learning
+            and growing as a developer.
           </p>
         </div>
       </header>

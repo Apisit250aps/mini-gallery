@@ -104,7 +104,6 @@ const ProjectDetail = ({ className, project }: ProjectDetailProps) => {
             {project.details && (
               <FadeUpOnScroll delay={0.2}>
                 <div className="prose prose-invert max-w-none">
-                  <h3 className="text-lg font-semibold mb-2">รายละเอียด</h3>
                   <p>{project.details}</p>
                 </div>
               </FadeUpOnScroll>
